@@ -37,6 +37,13 @@ public class CCSPlayerControllerState(ulong steamId)
         }
     }
 
+    public bool IsVip()
+    {
+        if (CSS.VipService == null)
+            return false;
+        return CSS.VipService.IsVip(SteamID);
+    }
+
     public void DisposeUseCmdTimer()
     {
         UseCmdTimer?.Kill();

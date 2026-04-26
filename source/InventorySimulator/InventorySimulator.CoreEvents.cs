@@ -25,7 +25,7 @@ public partial class InventorySimulator
                 var player = Utilities.GetPlayerFromSteamId(sprayDecal.AccountID);
                 if (player == null || player.IsBot)
                     return;
-                player.HandleSprayDecalCreated(sprayDecal);
+                HandlePlayerSprayDecalCreated(player, sprayDecal);
             });
         }
     }
@@ -37,7 +37,7 @@ public partial class InventorySimulator
         {
             var controller = entity.As<CCSPlayerController>();
             if (controller.SteamID != 0)
-                controller.RemoveState();
+                HandleControllerDeleted(controller);
         }
     }
 }

@@ -10,6 +10,7 @@ namespace InventorySimulator;
 public static class CSS
 {
     public static BasePlugin Plugin { get; set; } = null!;
+    public static VipService? VipService { get; set; }
 
     public static void Initialize(BasePlugin plugin)
     {

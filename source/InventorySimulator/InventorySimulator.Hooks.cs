@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+using System.Runtime.InteropServices;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
@@ -29,7 +30,7 @@ public partial class InventorySimulator
                             Natives.CServerSideClientBase_ActivatePlayer.Invoke(thisPtr);
                     });
                 if (!controllerState.IsFetching)
-                    player.RefreshInventory();
+                    HandlePlayerInventoryRefresh(player);
                 return HookResult.Stop;
             }
         }
@@ -41,7 +42,7 @@ public partial class InventorySimulator
         if (!ConVars.IsSprayOnUse.Value)
             return HookResult.Continue;
         var player = hook.GetParam<CCSPlayerController>(0);
-        player.HandleProcessUsercmds();
+        HandleClientProcessUsercmds(player);
         return HookResult.Continue;
     }
 
@@ -56,11 +57,14 @@ public partial class InventorySimulator
             if (itemDef != null)
             {
                 var controllerState = controller.GetState();
+                var isVip = controllerState.IsVip();
                 var item = controllerState.Inventory?.GetItemForSlot(
                     controller.TeamNum,
                     itemDef.DefaultLoadoutSlot,
                     itemDef.DefIndex,
-                    ConVars.IsFallbackTeam.Value
+                    ConVars.IsFallbackTeam.Value,
+                    ConVars.MinModels.Value,
+                    isVip
                 );
                 if (item != null)
                     hook.SetParam(
@@ -91,12 +95,14 @@ public partial class InventorySimulator
         var team = hook.GetParam<int>(1);
         var slot = hook.GetParam<int>(2);
         var controllerState = player.GetState();
+        var isVip = controllerState.IsVip();
         var item = controllerState.Inventory?.GetItemForSlot(
             (byte)team,
             (loadout_slot_t)slot,
             itemView.ItemDefinitionIndex,
             ConVars.IsFallbackTeam.Value,
-            ConVars.MinModels.Value
+            ConVars.MinModels.Value,
+            isVip
         );
         if (item != null)
         {

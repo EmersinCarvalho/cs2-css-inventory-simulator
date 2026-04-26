@@ -29,8 +29,12 @@ public class PlayerInventory(EquippedV4Response data)
             weapon.WearOverride = GetWeaponWear(weapon);
     }
 
-    public InventoryItem? GetKnife(byte team, bool fallback)
+    public InventoryItem? GetKnife(byte team, bool fallback, bool isVip = true)
     {
+        // Se o sistema VIP está ativo e o jogador não é VIP, retorna null (faca padrão)
+        if (ConVars.VipEnabled.Value && !isVip)
+            return null;
+        
         if (_data.Knives.TryGetValue(team, out var knife))
             return knife;
         if (fallback && _data.Knives.TryGetValue(TeamHelper.ToggleTeam(team), out knife))
@@ -52,8 +56,12 @@ public class PlayerInventory(EquippedV4Response data)
         return null;
     }
 
-    public InventoryItem? GetGloves(byte team, bool fallback)
+    public InventoryItem? GetGloves(byte team, bool fallback, bool isVip = true)
     {
+        // Se o sistema VIP está ativo e o jogador não é VIP, retorna null (luvas padrão)
+        if (ConVars.VipEnabled.Value && !isVip)
+            return null;
+        
         if (_data.Gloves.TryGetValue(team, out var glove))
             return glove;
         if (fallback && _data.Gloves.TryGetValue(TeamHelper.ToggleTeam(team), out glove))
@@ -88,7 +96,8 @@ public class PlayerInventory(EquippedV4Response data)
         loadout_slot_t slot,
         ushort def,
         bool fallback,
-        int minModels = 0
+        int minModels = 0,
+        bool isVip = true
     )
     {
         if (
@@ -97,7 +106,7 @@ public class PlayerInventory(EquippedV4Response data)
         )
         {
             return slot == loadout_slot_t.LOADOUT_SLOT_MELEE
-                ? GetKnife(team, fallback)
+                ? GetKnife(team, fallback, isVip)
                 : GetWeapon(team, def, fallback);
         }
         if (slot == loadout_slot_t.LOADOUT_SLOT_CLOTHING_CUSTOMPLAYER)
@@ -112,7 +121,7 @@ public class PlayerInventory(EquippedV4Response data)
         }
         if (slot == loadout_slot_t.LOADOUT_SLOT_CLOTHING_HANDS)
         {
-            return GetGloves(team, fallback);
+            return GetGloves(team, fallback, isVip);
         }
         if (slot == loadout_slot_t.LOADOUT_SLOT_FLAIR0)
             return _data.Collectible;

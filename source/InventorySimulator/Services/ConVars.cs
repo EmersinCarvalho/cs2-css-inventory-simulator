@@ -40,16 +40,16 @@ public static class ConVars
         false
     );
 
+    public static readonly FakeConVar<bool> IsWsImmediatelyVipOnly = new(
+        "invsim_ws_immediately_vip_only",
+        "Restrict immediate skin changes to VIP players only.",
+        false
+    );
+
     public static readonly FakeConVar<int> WsCooldown = new(
         "invsim_ws_cooldown",
         "Cooldown duration in seconds between inventory refreshes per player.",
         30
-    );
-
-    public static readonly FakeConVar<string> ChatPrefix = new(
-        "invsim_chat_prefix",
-        "Prefix displayed before chat messages.",
-        ""
     );
 
     public static readonly FakeConVar<string> WsUrlPrintFormat = new(
@@ -116,6 +116,30 @@ public static class ConVars
         "invsim_minmodels",
         "Enable player agents (0 = enabled, 1 = use map models per team, 2 = SAS & Phoenix).",
         0
+    );
+
+    public static readonly FakeConVar<bool> VipEnabled = new(
+        "invsim_vip_enabled",
+        "Enable VIP system for knives and gloves restrictions.",
+        false
+    );
+
+    public static readonly FakeConVar<string> VipApiUrl = new(
+        "invsim_vip_api_url",
+        "API URL that returns the list of VIP SteamIDs.",
+        ""
+    );
+
+    public static readonly FakeConVar<int> WsCooldownVip = new(
+        "invsim_ws_cooldown_vip",
+        "Cooldown duration in seconds for VIP players using !ws command.",
+        10
+    );
+
+    public static readonly FakeConVar<int> WsCooldownNonVip = new(
+        "invsim_ws_cooldown_nonvip",
+        "Cooldown duration in seconds for non-VIP players using !ws command.",
+        60
     );
 
     public static void Initialize(BasePlugin plugin)
